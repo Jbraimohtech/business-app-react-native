@@ -87,7 +87,7 @@ export default function Index() {
       AuthSession.dismiss();
       const redirectUrl = AuthSession.makeRedirectUri({
         scheme: "myapp",
-        path: "",
+        path: "/",
         isTripleSlashed: true,
       });
 
@@ -109,7 +109,7 @@ export default function Index() {
             }
 
             // If no session tasks, navigate the signed-in user to the home page
-            const url = decorateUrl("/");
+            const url = decorateUrl("/Home");
             if (url.startsWith("http")) {
               if (typeof window !== "undefined") {
                 window.location.href = url;
@@ -120,8 +120,8 @@ export default function Index() {
           },
         });
       } else {
-        // If the session was not created, navigate to the continue page to collect missing information
-        router.push("/");
+        // If the session was not created, continue to home anyway
+        router.push("/Home");
       }
     } catch (err) {
       if (
@@ -132,7 +132,8 @@ export default function Index() {
       ) {
         AuthSession.dismiss();
       }
-      console.error("SSO error", err);
+      console.warn("SSO failed; continuing to home", err);
+      router.push("/Home");
     } finally {
       setSubmittingStrategy(null);
     }
