@@ -1,22 +1,29 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
+import BusinessList from "../../../component/HomeScreen/BusinessList";
 import Category from "../../../component/HomeScreen/Category";
 import Header from "../../../component/HomeScreen/Header";
 import Slider from "../../../component/HomeScreen/Slider";
 
 export default function Home() {
   return (
-    <View style={styles.container}>
-      <View style={styles.headerBackground}></View>
-      {/* Header Section */}
-      <Header />
-      {/* Slider Section */}
-      <Slider />
-      {/* Category Section */}
-      <Category />
-
-      {/* Popular Section */}
-    </View>
+    <FlatList
+      data={[]}
+      renderItem={null}
+      ListHeaderComponent={
+        <View style={styles.container}>
+          <View style={styles.headerBackground}></View>
+          {/* Header Section */}
+          <Header />
+          {/* Slider Section */}
+          <Slider />
+          {/* Category Section */}
+          <Category />
+          {/* Popular Section */}
+          <BusinessList />
+        </View>
+      }
+    />
   );
 }
 
