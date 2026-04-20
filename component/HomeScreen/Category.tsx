@@ -7,12 +7,15 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import { apiClient } from "../../services/GlobalApi";
+import { apiClient, STRAPI_BASE_URL } from "../../services/GlobalApi";
 
-type categoryType = {
+type StrapiMedia = any;
+
+export type categoryType = {
+  id: number;
   name: string;
   premium: boolean;
-  icon: { url: string };
+  icon: StrapiMedia | null;
 };
 
 export default function Category() {
@@ -23,10 +26,22 @@ export default function Category() {
 
   const GetCategories = async () => {
     const result = await apiClient.get(
-      "/categories?filters[premium] [$eq]=true&populate=*",
+      "/categories?filters[premium][$eq]=true&populate=*",
     );
-    console.log(result.data);
-    setCategoryList(result?.data?.data);
+    console.log("Category API response:", result.data);
+    setCategoryList(result?.data?.data || []);
+  };
+
+  const getImageUrl = (icon: StrapiMedia | null) => {
+    if (!icon) return undefined;
+    const url =
+      typeof icon === "string"
+        ? icon
+        : (icon.url ??
+          icon.data?.attributes?.url ??
+          icon.data?.[0]?.attributes?.url);
+    if (!url || typeof url !== "string") return undefined;
+    return url.startsWith("http") ? url : `${STRAPI_BASE_URL}${url}`;
   };
 
   return (
@@ -39,12 +54,17 @@ export default function Category() {
       <FlatList
         data={categoryList}
         numColumns={4}
-        renderItem={({ item, index }) => (
-          <TouchableOpacity style={styles.categoryContainer} key={index}>
-            <Image style={styles.image} source={{ uri: item?.icon?.url }} />
-            <Text style={styles.CategoryText}>{item.name}</Text>
-          </TouchableOpacity>
-        )}
+        keyExtractor={(item, index) => item.id?.toString() ?? index.toString()}
+        renderItem={({ item }) => {
+          const imageUrl = getImageUrl(item.icon);
+
+          return (
+            <TouchableOpacity style={styles.categoryContainer}>
+              <Image style={styles.image} source={{ uri: imageUrl }} />
+              <Text style={styles.CategoryText}>{item.name}</Text>
+            </TouchableOpacity>
+          );
+        }}
       />
     </View>
   );
