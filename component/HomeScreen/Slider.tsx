@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Dimensions, FlatList, Image, StyleSheet, View } from "react-native";
-import { apiClient, STRAPI_BASE_URL } from "../../services/GlobalApi";
+import { apiClient, getStrapiMediaUrl } from "../../services/GlobalApi";
 
 type SliderType = {
   name: string;
   description: string;
-  image: { url: string };
+  image: any;
 };
 
 export default function Slider() {
@@ -40,7 +40,7 @@ export default function Slider() {
           <View key={index} style={styles.slide}>
             <Image
               style={styles.image}
-              source={{ uri: `${STRAPI_BASE_URL}${item.image.url}` }}
+              source={{ uri: getStrapiMediaUrl(item.image) }}
             />
           </View>
         )}
