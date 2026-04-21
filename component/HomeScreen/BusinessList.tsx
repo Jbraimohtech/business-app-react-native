@@ -7,10 +7,10 @@ import {
   Text,
   View,
 } from "react-native";
-import { apiClient, STRAPI_BASE_URL } from "../../services/GlobalApi";
+import { apiClient, getStrapiMediaUrl } from "../../services/GlobalApi";
 import { categoryType } from "./Category";
 
-type businessListType = {
+export type businessListType = {
   id: number;
   name: string;
   description: string;
@@ -27,16 +27,6 @@ type imagesType = {
 export default function BusinessList() {
   const [businessList, setBusinessList] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-
-  const getImageUrl = (image: any) => {
-    if (!image) return undefined;
-    const url =
-      image.url ??
-      image.data?.attributes?.url ??
-      image.data?.[0]?.attributes?.url;
-    if (!url || typeof url !== "string") return undefined;
-    return url.startsWith("http") ? url : `${STRAPI_BASE_URL}${url}`;
-  };
 
   useEffect(() => {
     GetPopularBusinessList();
@@ -71,7 +61,7 @@ export default function BusinessList() {
         renderItem={({ item, index }) => (
           <View key={index} style={styles.businessContainer}>
             <Image
-              source={{ uri: getImageUrl(item.images?.[0]) }}
+              source={{ uri: getStrapiMediaUrl(item.images) }}
               style={styles.businessImage}
             />
 

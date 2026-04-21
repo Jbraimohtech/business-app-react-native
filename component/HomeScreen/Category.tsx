@@ -1,13 +1,14 @@
+import { useRouter } from "expo-router";
 import React, { useEffect } from "react";
 import {
-    FlatList,
-    Image,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { apiClient, STRAPI_BASE_URL } from "../../services/GlobalApi";
+import { apiClient, getStrapiMediaUrl } from "../../services/GlobalApi";
 
 type StrapiMedia = any;
 
@@ -20,6 +21,8 @@ export type categoryType = {
 
 export default function Category() {
   const [categoryList, setCategoryList] = React.useState<categoryType[]>([]);
+  const router = useRouter();
+
   useEffect(() => {
     GetCategories();
   }, []);
@@ -33,15 +36,7 @@ export default function Category() {
   };
 
   const getImageUrl = (icon: StrapiMedia | null) => {
-    if (!icon) return undefined;
-    const url =
-      typeof icon === "string"
-        ? icon
-        : (icon.url ??
-          icon.data?.attributes?.url ??
-          icon.data?.[0]?.attributes?.url);
-    if (!url || typeof url !== "string") return undefined;
-    return url.startsWith("http") ? url : `${STRAPI_BASE_URL}${url}`;
+    return getStrapiMediaUrl(icon);
   };
 
   return (
@@ -59,7 +54,12 @@ export default function Category() {
           const imageUrl = getImageUrl(item.icon);
 
           return (
-            <TouchableOpacity style={styles.categoryContainer}>
+            <TouchableOpacity
+              style={styles.categoryContainer}
+              onPress={() =>
+                router.push(`/business-list?categoryName=${item.name}` as any)
+              }
+            >
               <Image style={styles.image} source={{ uri: imageUrl }} />
               <Text style={styles.CategoryText}>{item.name}</Text>
             </TouchableOpacity>
