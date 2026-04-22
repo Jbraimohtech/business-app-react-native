@@ -18,6 +18,8 @@ export type businessListType = {
   premium: boolean;
   category: categoryType;
   images: imagesType[];
+  phone: string;
+  website: string;
 };
 
 type imagesType = {
