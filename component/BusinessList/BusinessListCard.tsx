@@ -1,5 +1,6 @@
+import { useRouter } from "expo-router";
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { getStrapiMediaUrl } from "../../services/GlobalApi";
 import { businessListType } from "../HomeScreen/BusinessList";
 
@@ -10,9 +11,17 @@ type Props = {
 export default function BusinessListCard({ business }: Props) {
   const imageUrl = getStrapiMediaUrl(business?.images);
   console.log("BusinessListCard image URL:", imageUrl);
+  const router = useRouter();
 
   return (
-    <View style={styles.container}>
+    <TouchableOpacity
+      onPress={() =>
+        router.push(
+          `/business-details?business=${JSON.stringify(business)}` as any,
+        )
+      }
+      style={styles.container}
+    >
       <Image source={{ uri: imageUrl }} style={styles.businessImage} />
       <View style={styles.textContainer}>
         <Text style={styles.businessName}>{business.name}</Text>
@@ -25,7 +34,7 @@ export default function BusinessListCard({ business }: Props) {
           <Text style={styles.businessDescription}>4.5</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
