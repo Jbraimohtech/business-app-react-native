@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -5,6 +6,7 @@ import {
   Image,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { apiClient, getStrapiMediaUrl } from "../../services/GlobalApi";
@@ -29,6 +31,7 @@ type imagesType = {
 export default function BusinessList() {
   const [businessList, setBusinessList] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     GetPopularBusinessList();
@@ -61,7 +64,18 @@ export default function BusinessList() {
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item, index) => item.id?.toString() ?? index.toString()}
         renderItem={({ item, index }) => (
-          <View key={index} style={styles.businessContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              router.push({
+                pathname: "/business-details",
+                params: {
+                  business: JSON.stringify(item),
+                },
+              });
+            }}
+            key={index}
+            style={styles.businessContainer}
+          >
             <Image
               source={{ uri: getStrapiMediaUrl(item.images) }}
               style={styles.businessImage}
@@ -76,7 +90,7 @@ export default function BusinessList() {
               />
               <Text>4.3/5</Text>
             </View>
-          </View>
+          </TouchableOpacity>
         )}
       />
     </View>
@@ -109,6 +123,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginRight: 5,
     width: 230,
+    height: 210,
   },
   businessName: {
     fontFamily: "appFontBold",
